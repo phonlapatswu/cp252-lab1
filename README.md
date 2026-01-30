@@ -126,3 +126,70 @@
 7.1 ผู้เสนอราคาหรือผู้รับจ้าง ต้องไม่เป็นผู้ที่ถูกระบุชื่อไว้ในบัญชีรายชื่อผู้ทิ้งงานของทางราชการ และได้แจ้งเวียนชื่อแล้ว หรือไม่เป็นผู้ที่ได้รับผลของการสั่งให้นิติบุคคล หรือบุคคลอื่นเป็นผู้ทิ้งงานตามระเบียบของราชการ
 
 7.2 ผู้เสนอราคาหรือผู้รับจ้างหากไม่ได้เป็นเจ้าของผลิตภัณฑ์ซอฟต์แวร์โดยตรง จะต้องมีหนังสือแต่งตั้งตัวแทนจำหน่ายหรือสิทธิ์ในการพัฒนาต่อยอดจากเจ้าของผลิตภัณฑ์
+
+```mermaid
+graph LR
+    %% กำหนดสไตล์ Actor เป็นรูปคน (ใช้วงกลมแทนหัว)
+    User((User <br/> ผู้ใช้ทั่วไป))
+    Member((Member <br/> สมาชิก))
+    Admin((Admin <br/> ผู้ดูแลระบบ))
+    Sensor[("Sensor/LPR <br/> (System)")]
+
+    subgraph Smart_Parking_System [Smart Parking System]
+        direction TB
+        UC1([ลงทะเบียน / เข้าสู่ระบบ])
+        UC2([จัดการข้อมูลส่วนตัว / ยานพาหนะ])
+        UC3([ค้นหาและดูสถานะที่จอดรถ Real-time])
+        UC4([จองที่จอดรถล่วงหน้า])
+        UC5([ชำระค่าธรรมเนียม / เติมเงิน])
+        UC6([ยกเลิกการจอง])
+        UC7([นำทางไปยังช่องจอด])
+        UC8([สแกน QR Code เข้า-ออก])
+        UC9([ดูประวัติการจอง])
+        UC10([จัดการข้อมูลช่องจอด])
+        UC11([กำหนดอัตราค่าธรรมเนียม])
+        UC12([ดู Dashboard และรายงานสรุป])
+        UC13([จัดการสิทธิ์ผู้ใช้งาน])
+        UC14([อัปเดตสถานะช่องจอดอัตโนมัติ])
+        UC15([คำนวณค่าบริการอัตโนมัติ])
+        UC16([แจ้งเตือน Notification])
+    end
+
+    %% Relationships
+    User --- UC1
+    User --- UC3
+
+    %% Member inherits User actions + its own
+    Member --- UC1
+    Member --- UC3
+    Member --- UC2
+    Member --- UC4
+    Member --- UC5
+    Member --- UC6
+    Member --- UC7
+    Member --- UC8
+    Member --- UC9
+
+    Admin --- UC1
+    Admin --- UC10
+    Admin --- UC11
+    Admin --- UC12
+    Admin --- UC13
+
+    Sensor --- UC14
+    Sensor --- UC15
+
+    %% Include / Extend (เส้นประ)
+    UC4 -.->|include| UC5
+    UC4 -.->|include| UC1
+    UC14 -.->|updates| UC3
+    UC4 -.->|triggers| UC16
+    UC6 -.->|triggers| UC16
+
+    %% Styling
+    style Smart_Parking_System fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style User fill:#fff,stroke:#333
+    style Member fill:#fff,stroke:#333
+    style Admin fill:#fff,stroke:#333
+    style Sensor fill:#e1f5fe,stroke:#01579b
+```
